@@ -45,9 +45,9 @@ def fetch_response(oauth_request, connection):
 def get_unauthorized_request_token(consumer, 
                                    connection,
                                    request_token_url,
-                                   signature_method=HMAC_SIGNATURE_METHOD):
+                                   signature_method=HMAC_SIGNATURE_METHOD,parameters=None):
     oauth_request = oauth.OAuthRequest.from_consumer_and_token(
-        consumer, http_url=request_token_url
+        consumer, http_url=request_token_url, parameters = parameters
     )
     oauth_request.sign_request(signature_method, consumer, None)
     response = fetch_response(oauth_request, connection)
@@ -57,9 +57,10 @@ def get_unauthorized_request_token(consumer,
 def get_authorization_url(consumer, 
                           token, 
                           authorization_url,
-                          signature_method=HMAC_SIGNATURE_METHOD):
+                          signature_method=HMAC_SIGNATURE_METHOD,**kwargs):
+    parameters = kwargs.pop('parameters',None)
     oauth_request = oauth.OAuthRequest.from_consumer_and_token(
-        consumer, token=token, http_url=authorization_url
+        consumer, token=token, http_url=authorization_url, parameters = parameters
     )
     oauth_request.sign_request(signature_method, consumer, token)
     url = oauth_request.to_url()
